@@ -3,10 +3,16 @@ let allMasksEnabled = true;
 let allMasksCheckbox = document.getElementById('toggle-all-masks');
 allMasksCheckbox.addEventListener('click', toggleAllMasks);
 
-chrome.tabs.executeScript(
+const tabId = getTabId();
+
+function setAzMaskEnabled() {
+  document.body.classList.contains('az-mask-enabled');
+}
+
+chrome.scripting.executeScript(
   {
-    code: "document.body.classList.contains('az-mask-enabled');",
-    allFrames: true
+    target: { tabId: tabId, allFrames: true },
+    func: setAzMaskEnabled,
   },
   results => {
     if (results) {
@@ -24,14 +30,14 @@ function toggleAllMasks() {
 }
 
 function injectEnableAllMasks() {
-  chrome.tabs.executeScript({
+  chrome.scripting.executeScript({
     code: "document.body.classList.add('az-mask-enabled');",
     allFrames: true
   });
 }
 
 function injectDisableAllMasks() {
-  chrome.tabs.executeScript({
+  chrome.scripting.executeScript({
     code: "document.body.classList.remove('az-mask-enabled');",
     allFrames: true
   });
